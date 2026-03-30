@@ -1,0 +1,20 @@
+﻿[
+    {
+        "name":  "Central",
+        "host":  "10.119.8.1",
+        "port":  22,
+        "group":  "PABX"
+    },
+    {
+        "name":  "impressora DTI",
+        "host":  "10.82.0.68",
+        "port":  80,
+        "group":  "Impressoras"
+    },
+    {
+        "name":  "TELEFONE DTI",
+        "host":  "10.82.0.71",
+        "port":  5060,
+        "group":  "Telefones"
+    }
+]
