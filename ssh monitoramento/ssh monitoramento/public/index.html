@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monitoramento SSH  Central PABX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="header">
+        <div class="header-brand">
+          <div class="header-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7eb8f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/>
+              <line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+            </svg>
+          </div>
+          <div>
+            <div class="header-title">Monitoramento SSH</div>
+            <div class="header-sub" id="headerSummary">Carregando alvos...</div>
+          </div>
+        </div>
+        <div class="live-badge">
+          <span class="live-dot"></span>
+          Ao vivo
+        </div>
+      </header>
+
+      <section class="status-hero offline" id="statusPanel">
+        <div class="status-inner">
+          <div class="status-left">
+            <div class="status-dot-wrap">
+              <div class="status-dot"></div>
+              <div class="status-dot-ring"></div>
+            </div>
+            <div>
+              <div class="status-label-small">Status geral</div>
+              <strong id="statusText">Aguardando verificacao</strong>
+            </div>
+          </div>
+          <span class="status-pill" id="statusPill">Sem dados</span>
+        </div>
+      </section>
+
+      <div class="metrics-grid">
+        <article class="metric-card">
+          <div class="metric-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5d84a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
+          <div><div class="metric-label">Alvo principal</div><div class="metric-value" id="hostText">--</div></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5d84a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div>
+          <div><div class="metric-label">Porta principal</div><div class="metric-value" id="portText">--</div></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5d84a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div><div class="metric-label">Tempo de resposta</div><div class="metric-value" id="responseText">--</div></div>
+        </article>
+        <article class="metric-card">
+          <div class="metric-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5d84a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div><div class="metric-label">Ultima checagem</div><div class="metric-value" id="lastCheckedText">--</div></div>
+        </article>
+      </div>
+
+      <div class="targets-card">
+        <div class="targets-title">Cadastro de alvos</div>
+        <form id="targetForm" class="target-form">
+          <input id="targetNameInput" class="target-input" type="text" placeholder="Nome (opcional)" />
+          <input id="targetHostInput" class="target-input" type="text" placeholder="IP ou host" required />
+          <input id="targetPortInput" class="target-input" type="number" min="1" max="65535" placeholder="Porta (opcional)" />
+          <select id="targetGroupInput" class="target-input" required>
+            <option value="PABX">PABX</option>
+            <option value="Impressoras">Impressoras</option>
+            <option value="Telefones">Telefones</option>
+          </select>
+          <button id="targetSubmitButton" class="target-button" type="submit">Adicionar alvo</button>
+          <button id="targetCancelButton" class="target-button target-button-secondary" type="button" hidden>Cancelar edicao</button>
+        </form>
+        <p id="targetFormMessage" class="target-form-message"></p>
+
+        <div class="topics-grid">
+          <section class="topic-card topic-pabx">
+            <div class="topic-title">PABX</div>
+            <div id="targetsPabx" class="targets-list"></div>
+          </section>
+          <section class="topic-card topic-printers">
+            <div class="topic-title">Impressoras</div>
+            <div id="targetsPrinters" class="targets-list"></div>
+          </section>
+          <section class="topic-card topic-phones">
+            <div class="topic-title">Telefones</div>
+            <div id="targetsPhones" class="targets-list"></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Historico de resposta</div>
+            <div class="chart-sub">Alvo principal  ultimas verificacoes em ms</div>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-item ok"><span class="legend-dot"></span>Online</span>
+            <span class="legend-item down"><span class="legend-dot"></span>Offline</span>
+          </div>
+        </div>
+        <canvas id="responseChart" class="response-chart"></canvas>
+      </div>
+
+      <div class="alert-box" id="alertBox">
+        <div class="alert-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5d84a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="alert-body">
+          <div class="alert-title">Alerta</div>
+          <p id="alertText">Nenhum alerta no momento.</p>
+        </div>
+      </div>
+
+      <button class="notification-button" id="notificationButton" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Ativar notificacoes do navegador
+      </button>
+
+      <footer class="footer">Monitorando a cada 5 segundos  atualizado automaticamente</footer>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
