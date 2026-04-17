@@ -150,4 +150,4 @@ No painel web, use o botao `Enviar teste WhatsApp/Telegram` para validar o receb
 ## Observacoes
 
 - `localhost:3000` funciona apenas na sua maquina.
-- Para outros computadores da rede acessarem, sera necessario abrir o servidor para o IP da rede e liberar firewall.
+- Para outros computadores da rede acessarem, sera necessario abrir o servidor para o IP da rede e liberar
